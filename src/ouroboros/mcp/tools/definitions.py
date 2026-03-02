@@ -2263,8 +2263,7 @@ class LineageStatusHandler:
                     if dg.failure_error:
                         error_part = f" | {dg.failure_error[:60]}"
                     text_lines.append(
-                        f"  - Gen {dg.generation_number}: "
-                        f"{dg.phase.value}{score_part}{error_part}"
+                        f"  - Gen {dg.generation_number}: {dg.phase.value}{score_part}{error_part}"
                     )
 
         return Result.ok(

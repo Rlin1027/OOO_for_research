@@ -139,11 +139,7 @@ class LineageProjector:
                 from_gen = data["from_generation"]
                 to_gen = data["to_generation"]
                 # Capture discarded generations before truncating
-                discarded = tuple(
-                    generations[k]
-                    for k in sorted(generations.keys())
-                    if k > to_gen
-                )
+                discarded = tuple(generations[k] for k in sorted(generations.keys()) if k > to_gen)
                 rewind_history.append(
                     RewindRecord(
                         from_generation=from_gen,
