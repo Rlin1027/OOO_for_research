@@ -81,6 +81,10 @@ jobs:
         run: |
           cp crates/ouroboros-tui/target/${{ matrix.target }}/release/ouroboros-tui ouroboros-tui-${{ matrix.target }}
 
+      - name: Re-sign binary (macOS)
+        if: runner.os == 'macOS'
+        run: codesign --force --sign - ouroboros-tui-${{ matrix.target }}
+
       - name: Rename binary (windows)
         if: runner.os == 'Windows'
         run: |

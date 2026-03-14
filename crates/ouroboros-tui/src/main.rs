@@ -79,7 +79,6 @@ fn main() -> std::io::Result<()> {
     } else {
         match db::OuroborosDb::open(&db_path) {
             Ok(mut conn) => {
-                let events = conn.read_all_events();
                 let sessions = conn.distinct_sessions();
                 let event_count = conn.event_count();
 
@@ -117,7 +116,21 @@ fn main() -> std::io::Result<()> {
                             })
                             .collect::<Vec<_>>(),
                     );
-                    db::populate_state_from_events(&mut state, &events);
+                    // Load only the most recent session instead of all events
+                    if let Some(latest) = state.sessions.first() {
+                        let session_events =
+                            conn.read_events_for_session(&latest.aggregate_id);
+                        state.add_log(
+                            LogLevel::Info,
+                            "db",
+                            &format!(
+                                "Loaded session: {} ({} events)",
+                                latest.aggregate_id,
+                                session_events.len()
+                            ),
+                        );
+                        db::populate_state_from_events(&mut state, &session_events);
+                    }
                     ouro_db = Some(conn);
                 }
             }
